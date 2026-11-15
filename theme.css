@@ -40,6 +40,39 @@
   margin-top: 10px !important;
 }
 
+/* The pinned threads sit on one faint panel: the sidebar's text colour, mixed in
+   just enough to tell the group from the rest. Dark mode needs a little more than
+   light to show at all. The pinned threads are the rows between the app's two
+   empty markers. */
+:root {
+  --pinned-panel-strength: 2.5%;
+}
+
+.dark {
+  --pinned-panel-strength: 4%;
+}
+
+[data-testid=sidebar-pinned-header] ~ li[data-thread-item]:has(~ [data-testid=sidebar-pinned-divider]) {
+  background: color-mix(in srgb, var(--app-theme-sidebar-foreground, currentColor) var(--pinned-panel-strength), transparent);
+}
+
+/* The list leaves a 1px gap between rows, which would cut the panel into stripes.
+   Close it under every pinned row but the last. */
+[data-testid=sidebar-pinned-header] ~ li[data-thread-item]:has(+ li[data-thread-item]):has(~ [data-testid=sidebar-pinned-divider]) {
+  margin-bottom: -1px;
+}
+
+/* Round the panel's corners: the top of the first pinned row, the bottom of the last. */
+[data-testid=sidebar-pinned-header] + li[data-thread-item]:has(~ [data-testid=sidebar-pinned-divider]) {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+li[data-thread-item]:has(+ [data-testid=sidebar-pinned-divider]) {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
 [data-testid=sidebar-row-card] {
   /* The row's content box. Columns: icon, project name, stretch, time. */
   & > div:last-child {

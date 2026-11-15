@@ -7,6 +7,7 @@ A theme for T3 Code: the app's stock look, with [Arbor](https://github.com/aaron
 - **Colours.** T3 Code's default light and dark palettes, with the blue swapped for Arbor's green: the send button, focus rings, update notices and the terminal cursor.
 - **Sidebar thread rows.** Two lines where the app draws three. The title is on the first line with the time; the project name and details are on the second.
 - **Hover actions.** Snooze and settle appear over the end of the second line, so the title never gets cut short.
+- **Pinned threads.** The pinned group sits on one faint panel, with a small gap before the rest.
 
 Light and dark are both included.
 
