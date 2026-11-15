@@ -236,3 +236,42 @@ li[data-thread-item]:has(+ [data-testid=sidebar-pinned-divider]) {
     }
   }
 }
+
+/* ---------------------------------------------------------------------------------
+ * Sidebar title bar: the window controls and the back and forward arrows, no more
+ *
+ * The app's bar holds the T3 Code logo, the back and forward arrows, and a label
+ * for the release channel ("Nightly"), with a gap under it before the search row.
+ * Here the logo and the label are gone, the arrows sit at the right end, above the
+ * search row's buttons, and the search row comes straight after.
+ *
+ * The bar is the box three levels above the logo link. The link is hidden, not
+ * removed, so it still marks the bar.
+ * ------------------------------------------------------------------------------- */
+div:has(> div > div > a[aria-label="T3 Code home"]) {
+  /* The bar's content is 32px tall and centred in the bar, level with the window
+     controls. Keep it there, and end the bar right under it: the padding takes the
+     space that was above the content, and the height leaves none below. */
+  height: calc((var(--workspace-topbar-height) + 32px) / 2) !important;
+  padding-top: calc((var(--workspace-topbar-height) - 32px) / 2) !important;
+  /* The same inset as the search row, so the arrows line up with its buttons. */
+  padding-right: var(--sidebar-content-inset, .5rem) !important;
+
+  /* The logo, and the release channel label with the box around it. */
+  & a[aria-label="T3 Code home"],
+  & div:has(> [data-environment-identification]) {
+    display: none !important;
+  }
+
+  /* The box that held the logo and the arrows: stretch it across the bar and push
+     the arrows to its right end. */
+  & > div:last-child > div:first-child {
+    flex: 1 1 auto !important;
+    justify-content: flex-end !important;
+  }
+}
+
+/* The search row: no space above it. */
+[data-slot=sidebar-group]:has([aria-label="Search threads"]) {
+  padding-top: 0 !important;
+}
