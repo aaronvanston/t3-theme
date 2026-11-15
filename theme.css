@@ -266,9 +266,11 @@ div:has(> div > div > a[aria-label="T3 Code home"]) {
   /* The app draws a button that can be pressed on a layer of its own, and a
      disabled one with the rest of the bar. When the app is zoomed (120%, say) the
      two round to the pixel grid differently, and the arrow that can be pressed sits
-     a pixel above the one that cannot. Draw both with the bar. */
+     a pixel above the one that cannot. Give every button in the bar its own layer,
+     disabled or not. Taking the layer away from both lines them up too, but then a
+     button gets one while it is pressed and jumps a pixel. */
   & button {
-    will-change: auto !important;
+    will-change: scale !important;
   }
 
   /* The box that held the logo and the arrows: stretch it across the bar and push
