@@ -1,0 +1,195 @@
+/*
+ * The theme's CSS. `node build.mjs` strips the comments and whitespace and puts the
+ * result in t3-theme.json next to the colours from theme.json.
+ *
+ * T3 Code applies this after its own styles. It cannot load files: no @import, no
+ * image-set(), and url() only with a data: address or an #id.
+ *
+ * Most selectors here are T3 Code's internal class names, not the stable ones it
+ * documents, so a T3 Code update can break a rule. Each block says what it expects.
+ */
+
+/* ---------------------------------------------------------------------------------
+ * Sidebar thread rows: two lines where the app draws three
+ *
+ * The app's row is three stacked lines:
+ *   1. project icon, project name, time or status (and the hover actions)
+ *   2. title
+ *   3. branch, change counts, machine and model icons
+ *
+ * Here the row is a grid of two lines:
+ *   icon | title .......................... time or status
+ *   icon | project name ...... change counts, model icons
+ *
+ * The two-line layout comes from T3 Clawd by rohit3a (MIT):
+ * https://github.com/rohit3a/t3-clawd
+ * ------------------------------------------------------------------------------- */
+
+/* Less space between rows. The intrinsic size is the new row height, which the app
+   uses for rows it has not drawn yet. */
+[data-thread-item] {
+  padding-top: 1px !important;
+  padding-bottom: 1px !important;
+  contain-intrinsic-size: auto 58px !important;
+}
+
+[data-testid=sidebar-row-card] {
+  /* The row's content box. Columns: icon, project name, stretch, time. */
+  & > div:last-child {
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 8px 10px !important;
+    display: grid !important;
+    grid-template-columns: 24px auto minmax(0, 1fr) auto !important;
+    grid-template-rows: 20px 18px !important;
+    column-gap: 9px !important;
+    row-gap: 2px !important;
+    align-items: center !important;
+
+    /* The app's line one. Its children are placed in the grid one by one. */
+    & > div:first-child {
+      display: contents !important;
+
+      /* Only the icon, the time or status, and the project name are kept. */
+      & > :not(.size-4, .group\/sidebar-status-slot, span.text-secondary-label) {
+        display: none !important;
+      }
+
+      /* Project icon, down the left of both lines. */
+      & > .size-4 {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        justify-self: center;
+        width: 22px !important;
+        height: 22px !important;
+        border-radius: 6px !important;
+        overflow: hidden;
+
+        & svg {
+          width: 100% !important;
+          height: 100% !important;
+        }
+      }
+
+      & > .size-4:not([data-slot=project-monogram]) svg.lucide {
+        width: 16px !important;
+        height: 16px !important;
+        margin: 3px;
+      }
+
+      /* Time or status, at the right of line one. In the app it gives way to the
+         snooze and settle actions on hover, which then squeeze the title. Here it
+         stays put, and the actions sit over the right end of line two. */
+      & > .group\/sidebar-status-slot {
+        grid-column: 4;
+        grid-row: 1;
+        justify-self: end;
+        font-size: 12px !important;
+        /* Not a positioning box any more, so the actions below are placed against
+           the row's content box. */
+        position: static !important;
+
+        /* Keep the time or status showing on hover. Left alone while the app shows
+           its keyboard jump label in this slot. */
+        &:not(:has(> [data-jump-hint])) > span:first-child {
+          position: static !important;
+          opacity: 1 !important;
+        }
+
+        /* The hover actions, moved to the right end of line two. The 8px and 10px
+           are the content box's padding; 18px is the height of line two. */
+        & > span.inset-y-0 {
+          position: absolute !important;
+          top: auto !important;
+          bottom: 8px !important;
+          right: 10px !important;
+          height: 18px !important;
+          align-items: center !important;
+        }
+      }
+
+      /* Project name, at the left of line two. */
+      & > span.text-secondary-label {
+        grid-column: 2;
+        grid-row: 2;
+        font-size: 12px !important;
+        max-width: 10rem;
+        flex: none !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    /* The app's line two: the title, then the model icons when there is no line
+       three. */
+    & > div:nth-child(2) {
+      display: contents !important;
+
+      /* Title, across line one up to the time. */
+      & > :first-child {
+        grid-column: 2 / 4;
+        grid-row: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      & > :not(:first-child, .sr-only) {
+        grid-column: 4;
+        grid-row: 2;
+        justify-self: end;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+    }
+
+    /* The app's line three, moved to the right of line two. */
+    & > div:nth-child(3) {
+      grid-column: 3 / 5;
+      grid-row: 2;
+      min-width: 0;
+      margin-top: 0 !important;
+      gap: 6px !important;
+      justify-content: flex-end;
+
+      /* The branch name and its icon are dropped: there is no room for them. */
+      & > span.flex.min-w-0.flex-1:not(.truncate),
+      & > :first-child:has(+ span.flex.min-w-0.flex-1:not(.truncate)) {
+        display: none !important;
+      }
+
+      &,
+      & * {
+        font-size: 12px !important;
+      }
+    }
+
+    & > div:is(:nth-child(2), :nth-child(3)) svg {
+      width: 13px !important;
+      height: 13px !important;
+      opacity: .7;
+    }
+
+    & > div:nth-child(n + 4) {
+      display: none !important;
+    }
+  }
+
+  /* While the hover actions show (on hover, on keyboard focus, or with the snooze
+     menu open), fade out the right end of line two so they do not overlap it. The
+     fade is a fixed width, sized for the snooze and settle buttons together. */
+  &:is(
+    :hover,
+    :has(.group\/sidebar-status-slot :focus-visible),
+    :has(.group\/sidebar-status-slot > span.inset-y-0.static)
+  ):has(.group\/sidebar-status-slot > span.inset-y-0) > div:last-child {
+    & > div:nth-child(3),
+    & > div:nth-child(2) > :not(:first-child, .sr-only) {
+      -webkit-mask-image: linear-gradient(to left, transparent 92px, #000 112px) !important;
+      mask-image: linear-gradient(to left, transparent 92px, #000 112px) !important;
+    }
+  }
+}
