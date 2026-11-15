@@ -33,6 +33,13 @@
   contain-intrinsic-size: auto 58px !important;
 }
 
+/* A gap between the pinned threads and the rest. The app keeps an empty marker
+   between the two groups; the gap goes on it, and only when a pinned thread sits
+   right above it. */
+[data-thread-item] + [data-testid=sidebar-pinned-divider] {
+  margin-top: 10px !important;
+}
+
 [data-testid=sidebar-row-card] {
   /* The row's content box. Columns: icon, project name, stretch, time. */
   & > div:last-child {
@@ -97,8 +104,11 @@
         }
 
         /* The hover actions, moved to the right end of line two. The 8px and 10px
-           are the content box's padding; 18px is the height of line two. */
+           are the content box's padding; 18px is the height of line two. The
+           z-index keeps them above the faded details (see the fade at the end of
+           this file), which would otherwise take their clicks. */
         & > span.inset-y-0 {
+          z-index: 1;
           position: absolute !important;
           top: auto !important;
           bottom: 8px !important;
